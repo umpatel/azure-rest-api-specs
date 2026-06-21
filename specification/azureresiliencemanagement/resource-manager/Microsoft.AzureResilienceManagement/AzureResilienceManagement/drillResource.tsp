@@ -26,4 +26,15 @@ interface DrillResources {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<DrillResource, ServiceGroupTenantParameters>;
+
+  // Internal system operations — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<DrillResource, ServiceGroupParameters>;
+
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  delete is ArmResourceDeleteWithoutOkAsync<DrillResource, ServiceGroupParameters>;
 }

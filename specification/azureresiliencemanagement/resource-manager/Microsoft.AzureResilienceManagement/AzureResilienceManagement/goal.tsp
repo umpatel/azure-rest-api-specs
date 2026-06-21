@@ -13,6 +13,7 @@ import "./models/common/common.tsp";
 using Azure.ResourceManager;
 using TypeSpec.Http;
 using TypeSpec.Versioning;
+using TypeSpec.OpenAPI;
 
 @armProviderNamespace("Microsoft.AzureResilienceManagement")
 namespace Microsoft.AzureResilienceManagement;
@@ -135,4 +136,15 @@ interface GoalResources {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<GoalResource, ServiceGroupTenantParameters>;
+
+  // Internal system operations — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<GoalResource, ServiceGroupParameters>;
+
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  delete is ArmResourceDeleteWithoutOkAsync<GoalResource, ServiceGroupParameters>;
 }

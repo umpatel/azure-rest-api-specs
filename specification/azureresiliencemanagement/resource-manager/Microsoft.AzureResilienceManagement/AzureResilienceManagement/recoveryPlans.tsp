@@ -254,8 +254,20 @@ interface RecoveryResources {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<RecoveryResource, ServiceGroupParameters>;
+
+  // Internal system operations — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<RecoveryResource, ServiceGroupParameters>;
+
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  delete is ArmResourceDeleteWithoutOkAsync<RecoveryResource, ServiceGroupParameters>;
 }
 
+#suppress "@azure-tools/typespec-azure-resource-manager/no-resource-delete-operation" "RecoveryJob delete is intentionally omitted; this resource is system-managed only."
 @armResourceOperations
 @doc("Operations for managing recovery jobs.")
 interface RecoveryJobs {
@@ -264,6 +276,12 @@ interface RecoveryJobs {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<RecoveryJob, ServiceGroupParameters>;
+
+  // Internal system operation — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<RecoveryJob, ServiceGroupParameters>;
 
   @route(ServiceGroupRoute)
   @post
@@ -326,6 +344,7 @@ interface RecoveryJobs {
   >;
 }
 
+#suppress "@azure-tools/typespec-azure-resource-manager/no-resource-delete-operation" "RecoveryChildJob delete is intentionally omitted; this resource is system-managed only."
 @armResourceOperations
 @doc("Operations for managing recovery child jobs.")
 @removed(Versions.v2026_04_01_preview)
@@ -335,8 +354,15 @@ interface RecoveryChildJobs {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<RecoveryChildJob, ServiceGroupParameters>;
+
+  // Internal system operation — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<RecoveryChildJob, ServiceGroupParameters>;
 }
 
+#suppress "@azure-tools/typespec-azure-resource-manager/no-resource-delete-operation" "RecoveryJobResource delete is intentionally omitted; this resource is system-managed only."
 @armResourceOperations
 @doc("Operations for managing recovery job resources.")
 interface RecoveryJobResources {
@@ -345,4 +371,10 @@ interface RecoveryJobResources {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<RecoveryJobResource, ServiceGroupParameters>;
+
+  // Internal system operation — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<RecoveryJobResource, ServiceGroupParameters>;
 }

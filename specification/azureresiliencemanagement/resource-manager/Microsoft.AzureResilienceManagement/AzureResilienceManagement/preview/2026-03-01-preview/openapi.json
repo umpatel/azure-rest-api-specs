@@ -45,6 +45,9 @@
       "name": "OperationStatus"
     },
     {
+      "name": "ProviderPermissions"
+    },
+    {
       "name": "GoalAssignments"
     },
     {
@@ -106,6 +109,35 @@
     }
   ],
   "paths": {
+    "/providerPermissions/Microsoft.AzureResilienceManagement": {
+      "get": {
+        "operationId": "ProviderPermissions_List",
+        "tags": [
+          "ProviderPermissions"
+        ],
+        "description": "Gets the provider permissions for the Microsoft.AzureResilienceManagement resource provider.",
+        "parameters": [
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Azure operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/ProviderPermissionListResult"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-internal-operation": true
+      }
+    },
     "/providers/Microsoft.AzureResilienceManagement/locations/{location}/operationStatuses/{operationId}": {
       "get": {
         "operationId": "OperationStatus_Get",
@@ -656,6 +688,143 @@
             "$ref": "./examples/DrillResources_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "DrillResources_CreateOrUpdate",
+        "tags": [
+          "DrillResources"
+        ],
+        "description": "Create a DrillResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "drillName",
+            "in": "path",
+            "description": "The name of the Drill",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "drillResourceName",
+            "in": "path",
+            "description": "The name of the DrillResource (GUID).",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DrillResource"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'DrillResource' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillResource"
+            }
+          },
+          "201": {
+            "description": "Resource 'DrillResource' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillResource"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
+      },
+      "delete": {
+        "operationId": "DrillResources_Delete",
+        "tags": [
+          "DrillResources"
+        ],
+        "description": "Delete a DrillResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "drillName",
+            "in": "path",
+            "description": "The name of the Drill",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "drillResourceName",
+            "in": "path",
+            "description": "The name of the DrillResource (GUID).",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Resource deletion accepted.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "The Location header contains the URL where the status of the long running operation can be checked."
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "204": {
+            "description": "Resource does not exist."
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/drills/{drillName}/drillRuns": {
@@ -755,6 +924,82 @@
             "$ref": "./examples/DrillRuns_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "DrillRuns_CreateOrUpdate",
+        "tags": [
+          "DrillRuns"
+        ],
+        "description": "Create a DrillRun",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "drillName",
+            "in": "path",
+            "description": "The name of the Drill",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "drillRunName",
+            "in": "path",
+            "description": "The name of the DrillRun (GUID).",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DrillRun"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'DrillRun' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillRun"
+            }
+          },
+          "201": {
+            "description": "Resource 'DrillRun' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillRun"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/drills/{drillName}/drillRuns/{drillRunName}/addNotes": {
@@ -1333,6 +1578,90 @@
             "$ref": "./examples/DrillRunChildJobs_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "DrillRunChildJobs_CreateOrUpdate",
+        "tags": [
+          "DrillRunChildJobs"
+        ],
+        "description": "Create a DrillRunChildJob",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "drillName",
+            "in": "path",
+            "description": "The name of the Drill",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "drillRunName",
+            "in": "path",
+            "description": "The name of the DrillRun (GUID).",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "drillRunChildJobName",
+            "in": "path",
+            "description": "The unique name (Guid) of the DrillRun child job",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DrillRunChildJob"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'DrillRunChildJob' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillRunChildJob"
+            }
+          },
+          "201": {
+            "description": "Resource 'DrillRunChildJob' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillRunChildJob"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/drills/{drillName}/drillRuns/{drillRunName}/drillRunResources": {
@@ -1448,6 +1777,90 @@
             "$ref": "./examples/DrillRunResources_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "DrillRunResources_CreateOrUpdate",
+        "tags": [
+          "DrillRunResources"
+        ],
+        "description": "Create a DrillRunResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "drillName",
+            "in": "path",
+            "description": "The name of the Drill",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "drillRunName",
+            "in": "path",
+            "description": "The name of the DrillRun (GUID).",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "drillRunResourceName",
+            "in": "path",
+            "description": "The unique name (GUID) of the recovery job resource.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DrillRunResource"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'DrillRunResource' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillRunResource"
+            }
+          },
+          "201": {
+            "description": "Resource 'DrillRunResource' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/DrillRunResource"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/drills/{drillName}/drillRuns/{drillRunName}/failOver": {
@@ -2728,6 +3141,143 @@
             "$ref": "./examples/GoalResources_Get_MinimumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "GoalResources_CreateOrUpdate",
+        "tags": [
+          "GoalResources"
+        ],
+        "description": "Create a GoalResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "goalAssignmentName",
+            "in": "path",
+            "description": "The name of the GoalAssignment",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "goalResourceName",
+            "in": "path",
+            "description": "The name of the GoalAssignment",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GoalResource"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'GoalResource' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/GoalResource"
+            }
+          },
+          "201": {
+            "description": "Resource 'GoalResource' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/GoalResource"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
+      },
+      "delete": {
+        "operationId": "GoalResources_Delete",
+        "tags": [
+          "GoalResources"
+        ],
+        "description": "Delete a GoalResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "goalAssignmentName",
+            "in": "path",
+            "description": "The name of the GoalAssignment",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          },
+          {
+            "name": "goalResourceName",
+            "in": "path",
+            "description": "The name of the GoalAssignment",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{3,24}$"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Resource deletion accepted.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "The Location header contains the URL where the status of the long running operation can be checked."
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "204": {
+            "description": "Resource does not exist."
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/goalAssignments/{goalAssignmentName}/recommendCapacity": {
@@ -3903,6 +4453,82 @@
             "$ref": "./examples/RecoveryJobs_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "RecoveryJobs_CreateOrUpdate",
+        "tags": [
+          "RecoveryJobs"
+        ],
+        "description": "Create a RecoveryJob",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "recoveryPlanName",
+            "in": "path",
+            "description": "The name of the recovery orchestration plan.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{5,24}$"
+          },
+          {
+            "name": "recoveryJobName",
+            "in": "path",
+            "description": "The unique name (GUID) of the recovery job.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RecoveryJob"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'RecoveryJob' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryJob"
+            }
+          },
+          "201": {
+            "description": "Resource 'RecoveryJob' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryJob"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/recoveryPlans/{recoveryPlanName}/recoveryJobs/{recoveryJobName}/cancel": {
@@ -4100,6 +4726,90 @@
             "$ref": "./examples/RecoveryChildJobs_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "RecoveryChildJobs_CreateOrUpdate",
+        "tags": [
+          "RecoveryChildJobs"
+        ],
+        "description": "Create a RecoveryChildJob",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "recoveryPlanName",
+            "in": "path",
+            "description": "The name of the recovery orchestration plan.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{5,24}$"
+          },
+          {
+            "name": "recoveryJobName",
+            "in": "path",
+            "description": "The unique name (GUID) of the recovery job.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "recoveryChildJobName",
+            "in": "path",
+            "description": "The unique name (Guid) of the recovery child job",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RecoveryChildJob"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'RecoveryChildJob' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryChildJob"
+            }
+          },
+          "201": {
+            "description": "Resource 'RecoveryChildJob' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryChildJob"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/recoveryPlans/{recoveryPlanName}/recoveryJobs/{recoveryJobName}/recoveryJobResources": {
@@ -4215,6 +4925,90 @@
             "$ref": "./examples/RecoveryJobResources_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "RecoveryJobResources_CreateOrUpdate",
+        "tags": [
+          "RecoveryJobResources"
+        ],
+        "description": "Create a RecoveryJobResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "recoveryPlanName",
+            "in": "path",
+            "description": "The name of the recovery orchestration plan.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{5,24}$"
+          },
+          {
+            "name": "recoveryJobName",
+            "in": "path",
+            "description": "The unique name (GUID) of the recovery job.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "recoveryJobResourceName",
+            "in": "path",
+            "description": "The unique name (GUID) of the recovery job resource.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RecoveryJobResource"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'RecoveryJobResource' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryJobResource"
+            }
+          },
+          "201": {
+            "description": "Resource 'RecoveryJobResource' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryJobResource"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/recoveryPlans/{recoveryPlanName}/recoveryJobs/{recoveryJobName}/resume": {
@@ -4469,6 +5263,143 @@
             "$ref": "./examples/RecoveryResources_Get_MaximumSet_Gen.json"
           }
         }
+      },
+      "put": {
+        "operationId": "RecoveryResources_CreateOrUpdate",
+        "tags": [
+          "RecoveryResources"
+        ],
+        "description": "Create a RecoveryResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "recoveryPlanName",
+            "in": "path",
+            "description": "The name of the recovery orchestration plan.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{5,24}$"
+          },
+          {
+            "name": "recoveryResourceName",
+            "in": "path",
+            "description": "The unique name (Guid) of the recovery resource",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "name": "resource",
+            "in": "body",
+            "description": "Resource create parameters.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RecoveryResource"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource 'RecoveryResource' update operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryResource"
+            }
+          },
+          "201": {
+            "description": "Resource 'RecoveryResource' create operation succeeded",
+            "schema": {
+              "$ref": "#/definitions/RecoveryResource"
+            },
+            "headers": {
+              "Azure-AsyncOperation": {
+                "type": "string",
+                "description": "A link to the status monitor"
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "azure-async-operation"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
+      },
+      "delete": {
+        "operationId": "RecoveryResources_Delete",
+        "tags": [
+          "RecoveryResources"
+        ],
+        "description": "Delete a RecoveryResource",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ServiceGroupBaseParameters"
+          },
+          {
+            "$ref": "../../../../../../common-types/resource-management/v6/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "recoveryPlanName",
+            "in": "path",
+            "description": "The name of the recovery orchestration plan.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]{5,24}$"
+          },
+          {
+            "name": "recoveryResourceName",
+            "in": "path",
+            "description": "The unique name (Guid) of the recovery resource",
+            "required": true,
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Resource deletion accepted.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "The Location header contains the URL where the status of the long running operation can be checked."
+              },
+              "Retry-After": {
+                "type": "integer",
+                "format": "int32",
+                "description": "The Retry-After header can indicate how long the client should wait before polling the operation status."
+              }
+            }
+          },
+          "204": {
+            "description": "Resource does not exist."
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "../../../../../../common-types/resource-management/v6/types.json#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-internal-operation": true
       }
     },
     "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/recoveryPlans/{recoveryPlanName}/reprotect": {
@@ -10163,6 +11094,45 @@
       },
       "required": [
         "qualificationState"
+      ]
+    },
+    "ProviderPermission": {
+      "type": "object",
+      "description": "Represents a single permission entry for the resource provider.",
+      "properties": {
+        "applicationId": {
+          "type": "string",
+          "description": "The application ID of the application to which the permission belongs."
+        },
+        "roleDefinition": {
+          "type": "string",
+          "description": "The role definition for the provider permission."
+        },
+        "managedByRoleDefinition": {
+          "type": "string",
+          "description": "The managed by role definition for the provider permission."
+        }
+      }
+    },
+    "ProviderPermissionListResult": {
+      "type": "object",
+      "description": "List of provider permissions.",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "The list of provider permissions for this RP.",
+          "items": {
+            "$ref": "#/definitions/ProviderPermission"
+          },
+          "x-ms-identifiers": []
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "The URL to get the next set of results."
+        }
+      },
+      "required": [
+        "value"
       ]
     },
     "ProvisioningState": {

@@ -18,6 +18,7 @@ using TypeSpec.Rest;
 using TypeSpec.Versioning;
 using Azure.ResourceManager;
 using Azure.ResourceManager.Foundations;
+using TypeSpec.OpenAPI;
 
 @armProviderNamespace("Microsoft.AzureResilienceManagement")
 @versioned(Microsoft.AzureResilienceManagement.Versions)
@@ -58,3 +59,46 @@ interface OperationStatus {
 }
 
 @@segment(OperationStatus.get::parameters.operationId, "operationStatuses");
+
+/** Represents a single permission entry for the resource provider. */
+model ProviderPermission {
+  @doc("The application ID of the application to which the permission belongs.")
+  applicationId?: string;
+
+  @doc("The role definition for the provider permission.")
+  roleDefinition?: string;
+
+  @doc("The managed by role definition for the provider permission.")
+  managedByRoleDefinition?: string;
+}
+
+/** List of provider permissions. */
+model ProviderPermissionListResult {
+  @doc("The list of provider permissions for this RP.")
+  @identifiers(#[])
+  value: ProviderPermission[];
+
+  @doc("The URL to get the next set of results.")
+  nextLink?: string;
+}
+
+// Internal system operation — used by ARM to query permissions for this resource provider.
+@armResourceOperations
+interface ProviderPermissions {
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  #suppress "@azure-tools/typespec-azure-resource-manager/arm-resource-operation" "ProviderPermissions is a custom provider-level route, not a standard ARM resource."
+  @extension("x-ms-internal-operation", true)
+  @autoRoute
+  @get
+  @doc("Gets the provider permissions for the Microsoft.AzureResilienceManagement resource provider.")
+  list(
+    ...ApiVersionParameter,
+
+    @path
+    @segment("providers")
+    @doc("The provider namespace.")
+    provider: "Microsoft.AzureResilienceManagement",
+  ): ArmResponse<ProviderPermissionListResult> | ErrorResponse;
+}
+
+@@segment(ProviderPermissions.list::parameters.provider, "providerPermissions");

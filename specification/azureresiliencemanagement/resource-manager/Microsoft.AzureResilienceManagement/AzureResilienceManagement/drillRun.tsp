@@ -17,12 +17,19 @@ using TypeSpec.OpenAPI;
 
 namespace Microsoft.AzureResilienceManagement;
 
+#suppress "@azure-tools/typespec-azure-resource-manager/no-resource-delete-operation" "DrillRun delete is intentionally omitted; this resource is system-managed only."
 @armResourceOperations(DrillRun)
 interface DrillRuns {
   // ONLY Get and POST actions are exposed to the user.
 
   @route(ServiceGroupRoute)
   get is ArmResourceRead<DrillRun, ServiceGroupParameters>;
+
+  // Internal system operation — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<DrillRun, ServiceGroupParameters>;
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<DrillRun, ServiceGroupParameters>;
@@ -131,6 +138,7 @@ interface DrillRuns {
   >;
 }
 
+#suppress "@azure-tools/typespec-azure-resource-manager/no-resource-delete-operation" "DrillRunChildJob delete is intentionally omitted; this resource is system-managed only."
 @armResourceOperations
 @doc("Operations for managing Drill Run child jobs.")
 @removed(Versions.v2026_04_01_preview)
@@ -140,8 +148,15 @@ interface DrillRunChildJobs {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<DrillRunChildJob, ServiceGroupParameters>;
+
+  // Internal system operation — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<DrillRunChildJob, ServiceGroupParameters>;
 }
 
+#suppress "@azure-tools/typespec-azure-resource-manager/no-resource-delete-operation" "DrillRunResource delete is intentionally omitted; this resource is system-managed only."
 @armResourceOperations
 @doc("Operations for managing Drill Run resources.")
 interface DrillRunResources {
@@ -150,6 +165,12 @@ interface DrillRunResources {
 
   @route(ServiceGroupRoute)
   list is ArmResourceListByParent<DrillRunResource, ServiceGroupParameters>;
+
+  // Internal system operation — not exposed to end users (origin: system).
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "x-ms-internal-operation is required to advertise system-only operations in the ARM operations list for KPI compliance."
+  @extension("x-ms-internal-operation", true)
+  @route(ServiceGroupRoute)
+  createOrUpdate is ArmResourceCreateOrReplaceAsync<DrillRunResource, ServiceGroupParameters>;
 }
 
 @armResourceOperations
